@@ -1,6 +1,6 @@
 {
   "name": "pugvdomify",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Browserify transform to compile pug files into functions returning virtual-dom nodes.",
   "main": "index.js",
   "scripts": {
@@ -16,15 +16,15 @@
     "virtual-dom"
   ],
   "dependencies": {
-      "browserify-transform-tools": "^1.6.0",
-      "convert-source-map": "~1.3.0",
-      "pug": "^2.0.0-beta6",
-      "source-map": "^0.5.6",
-      "through": "^2.3.8"
+    "browserify-transform-tools": "^1.6.0",
+    "convert-source-map": "~1.3.0",
+    "pug": "^2.0.0-beta6",
+    "source-map": "^0.5.6",
+    "through": "^2.3.8"
   },
   "devDependencies": {
-      "browserify": "^13.1.0",
-      "pug-runtime": "^2.0.2"
+    "browserify": "^13.1.0",
+    "pug-runtime": "^2.0.2"
   },
   "author": "Gryphon Myers",
   "license": "MIT",
