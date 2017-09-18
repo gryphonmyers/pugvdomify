@@ -20,12 +20,12 @@
     "convert-source-map": "~1.3.0",
     "pug": "^2.0.0-beta6",
     "source-map": "^0.5.6",
-    "through": "^2.3.8"
+    "through": "^2.3.8",
+    "pug-vdom": "https://github.com/batiste/pug-vdom.git#master"
   },
   "devDependencies": {
     "browserify": "^13.1.0",
-    "pug-runtime": "^2.0.2",
-    "pug-vdom": "https://github.com/batiste/pug-vdom.git#master"
+    "pug-runtime": "^2.0.2"
   },
   "author": "Gryphon Myers",
   "license": "MIT",
