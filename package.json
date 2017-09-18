@@ -24,7 +24,8 @@
   },
   "devDependencies": {
     "browserify": "^13.1.0",
-    "pug-runtime": "^2.0.2"
+    "pug-runtime": "^2.0.2",
+    "pug-vdom": "https://github.com/batiste/pug-vdom.git#master"
   },
   "author": "Gryphon Myers",
   "license": "MIT",
