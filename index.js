@@ -60,7 +60,7 @@ function register() {
 
 function compile(file, pugText, options) {
     basedir = path.parse(file).dir;
-    var result = "module.exports = ";
+    var result = "require('pug-vdom/runtime');\r\n module.exports = ";
     var ast = pugVDOM.ast(file, basedir);
     var func = 'function(locals, h){' + new pugVDOM.Compiler(ast).compile().toString() + 'return render(locals, h);}';
     result += func.toString();
