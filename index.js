@@ -14,11 +14,10 @@ var defaultPugOptions = {
     h: h
 };
 
-function getTransformFn(options) {
-    var key;
-    options = _.defaults(options, defaultPugOptions);
-
-    return function (file) {
+function getTransformFn() {
+    return function (file, options) {
+        options = _.defaults(options, defaultPugOptions);
+        
         if (!/\.(pug)$/.test(file)) return through();
 
         var data = '';
@@ -30,13 +29,13 @@ function getTransformFn(options) {
 
         function end() {
             var _this = this;
-            configData = transformTools.loadTransformConfig('pugvdomify', file, { fromSourceFileDir: true }, function (err, configData) {
+            transformTools.loadTransformConfig('pugvdomify', file, { fromSourceFileDir: true }, function (err, configData) {
                 if (configData) {
-                    options = _.defaults(options, configData.config);
+                    var config = _.defaults(options, configData.config);
                 }
 
                 try {
-                    var result = compile(file, data, options);
+                    var result = compile(file, data, config);
                     _this.queue(result);
                 } catch (e) {
                     _this.emit("error", e);
@@ -53,15 +52,39 @@ module.exports.register = register;
 
 function register() {
     require.extensions['.pug'] = function (module, filename) {
-        var result = compile(fs.readFileSync(filename, 'utf-8'), {});
+        var result = compile(filename, fs.readFileSync(filename, 'utf-8'), {});
         return module._compile(result, filename);
     };
 }
 
 function compile(file, pugText, options) {
     basedir = path.parse(file).dir;
+    
+    if (options.plugins) {
+        var plugins = Array.isArray(options.plugins) ? options.plugins : [options.plugins];
+
+        plugins = plugins.map(pluginObj => {
+            try {
+                var module = require(pluginObj._[0])
+            } catch (err) {
+                throw "Could not load plugin " + pluginObj._[0];
+            }
+            return module(pluginObj);
+        });
+
+        //For now, we are only supporting loader plugins.
+        plugins = plugins.filter(plugin => {
+            return plugin.lex || plugin.parse || plugin.resolve || plugin.read;
+        });
+        var opts = plugins.reduce((finalVal, plugin) => {
+            Object.assign(finalVal, plugin);
+            return finalVal;
+        }, {});
+
+        options = _.defaults(opts, options);
+    }
     var result = "require('pug-vdom/runtime');\r\n module.exports = ";
-    var ast = pugVDOM.ast(file, basedir);
+    var ast = pugVDOM.ast(file, basedir, options);
     var func = 'function(locals, h){' + new pugVDOM.Compiler(ast).compile().toString() + 'return render(locals, h);}';
     result += func.toString();
     return result;
