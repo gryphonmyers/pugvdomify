@@ -59,32 +59,40 @@ function register() {
 
 function compile(file, pugText, options) {
     basedir = path.parse(file).dir;
+
+    var opts = {};
     
     if (options.plugins) {
         var plugins = Array.isArray(options.plugins) ? options.plugins : [options.plugins];
 
         plugins = plugins.map(pluginObj => {
             try {
-                var module = require(pluginObj._[0])
+                if (Array.isArray(pluginObj)) {
+                    var moduleName = pluginObj[0];
+                    var pluginOpts = pluginObj[1];
+                } else {
+                    moduleName = pluginObj._[0];
+                    pluginOpts = pluginObj;
+                }
+                var module = require(moduleName);
             } catch (err) {
                 throw "Could not load plugin " + pluginObj._[0];
             }
-            return module(pluginObj);
+            return module(pluginOpts);
         });
 
         //For now, we are only supporting loader plugins.
         plugins = plugins.filter(plugin => {
             return plugin.lex || plugin.parse || plugin.resolve || plugin.read;
         });
-        var opts = plugins.reduce((finalVal, plugin) => {
+
+        Object.assign(opts, plugins.reduce((finalVal, plugin) => {
             Object.assign(finalVal, plugin);
             return finalVal;
-        }, {});
-
-        options = _.defaults(opts, options);
+        }, {}))
     }
     var result = "require('pug-vdom/runtime');\r\n module.exports = ";
-    var ast = pugVDOM.ast(file, basedir, options);
+    var ast = pugVDOM.ast(file, basedir, opts);
     var func = 'function(locals, h){' + new pugVDOM.Compiler(ast).compile().toString() + 'return render(locals, h);}';
     result += func.toString();
     return result;
