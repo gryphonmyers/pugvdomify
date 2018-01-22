@@ -30,9 +30,9 @@ function getTransformFn() {
         function end() {
             var _this = this;
             transformTools.loadTransformConfig('pugvdomify', file, { fromSourceFileDir: true }, function (err, configData) {
-                if (configData) {
-                    var config = _.defaults(options, configData.config);
-                }
+                configData = configData || {};
+
+                var config = _.defaults(options, configData.config);
 
                 try {
                     var result = compile(file, data, config);
@@ -61,7 +61,7 @@ function compile(file, pugText, options) {
     basedir = path.parse(file).dir;
 
     var opts = {};
-    
+
     if (options.plugins) {
         var plugins = Array.isArray(options.plugins) ? options.plugins : [options.plugins];
 
