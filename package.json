@@ -1,6 +1,6 @@
 {
   "name": "pugvdomify",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "Browserify transform to compile pug files into functions returning virtual-dom nodes.",
   "main": "index.js",
   "scripts": {
