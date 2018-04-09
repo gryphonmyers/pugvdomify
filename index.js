@@ -1,6 +1,5 @@
 var fs = require('fs');
 var _ = require('lodash');
-var pug = require('pug');
 var through = require('through');
 var transformTools = require('browserify-transform-tools');
 var path = require('path');
